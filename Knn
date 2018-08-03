@@ -1,0 +1,132 @@
+# coding: utf-8
+
+# In[137]:
+
+
+import pandas as panda
+import numpy as np
+import math
+import operator
+
+
+# In[141]:
+
+
+#Read iris data 
+df = panda.read_csv("D:\python\iris.csv")
+
+
+# In[143]:
+
+
+# del id from the list.
+del df["Id"]
+
+
+# In[144]:
+
+
+df.head()
+
+
+# In[ ]:
+
+
+# Define Defining a function which calculates euclidean distance between two data pointsing a function 
+# which calculates euclidean distance between two data points
+
+def euclieanDistance(data1,data2,length):
+    distance =0
+    for x in range(length):
+        distance+= np.square(data1[x] - data2[x])
+    
+    return np.sqrt(distance)
+
+
+# In[149]:
+
+
+
+# This calculate the K nearest neigbour
+
+def Knn(trainingSet,testInstance,k):
+    
+    # Disatances will contains total distance between testpoint to complete training sets
+    distances = {}
+    sort= {}
+    
+    # length of the test column
+    length =test.shape[1]
+    
+    # Iterate each training row
+    for x in range(len(trainingSet)):
+        dist = euclieanDistance(testInstance,trainingSet.iloc[x],length)
+        distances[x] = dist[0]
+
+    # sort from ascending order to find nearest neigboura
+    sortedascending = sorted(distances.items(),key=operator.itemgetter(1))
+
+
+    # Fetch the nearerst neighbours based on K value
+    neighbours = []
+    for x in range(k):
+        neighbours.append(sortedascending[x][0])
+
+    
+    # Find how many times each class belongs to.
+    # Example
+    # Iris-setosa 2
+    # Iris-Verstica 4 
+    # Based on the frequency of this class will decide test point belong to which clas
+    # in the above example test point belongs to the class Iris-Verstica
+    classvotes = {}
+    for x in range(len(neighbours)):
+        response = df.iloc[neighbours[x]][-1]
+    
+        if response in classvotes:
+            classvotes[response]+= 1
+        else:
+            classvotes[response] = 1
+    
+    # Sort the class in the descenind order
+    sortedVotes = sorted(classvotes.items(),key=operator.itemgetter(1),reverse=True)
+    # Return test point belongs to which class and all the nearby neighbours.
+    return(sortedVotes[0][0],neighbours)
+
+
+# In[146]:
+
+
+# create a dummy test
+
+testdata = [[3.5,2.4,1.6,2.3]]
+
+testSet =  panda.DataFrame(testdata)
+
+
+# In[147]:
+
+
+# Set the number of neighbours = 5
+k = 5
+result,neig =  Knn(df,testSet,k)
+
+# Predicted class
+
+print(result)
+print(neig)
+
+
+# In[148]:
+
+
+# Set the number of neighbours = 5
+k = 10
+result,neig =  Knn(df,testSet,k)
+
+# Predicted class
+
+print(result)
+print(neig)
+
+
